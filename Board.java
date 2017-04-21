@@ -30,7 +30,6 @@ public class Board {
 	public Board(int n){
 		size = n; 
 		board_letters = new ArrayList<ArrayList<Letter>>();
-		
 		cur_word = new ArrayList<Letter>();
 		for(int i = 0; i < n; i++){
 			ArrayList<Letter> row = new ArrayList<Letter>();
