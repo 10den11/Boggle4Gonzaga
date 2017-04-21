@@ -205,4 +205,11 @@ public class Letter {
 	public void reRoll(){
 		this.character = new Letter(x,y).getCharacter();
 	}
+	public int getX(){
+		return x;
+
+	}
+	public int getY(){
+		return y;
+	}
 }

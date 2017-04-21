@@ -10,6 +10,7 @@ import java.util.Scanner;
  * 4/2/2017
  * CPSC 224, Project Boggle
  */
+
 public class Board {
 	private int size;
 	private ArrayList<ArrayList<Letter>> board_letters;
@@ -30,6 +31,7 @@ public class Board {
 		size = n; 
 		board_letters = new ArrayList<ArrayList<Letter>>();
 		
+		cur_word = new ArrayList<Letter>();
 		for(int i = 0; i < n; i++){
 			ArrayList<Letter> row = new ArrayList<Letter>();
 			
@@ -47,7 +49,7 @@ public class Board {
 	 * @param y The y-coordinate.
 	 * @return The letter at coordinates (x,y).
 	 */
-	private Letter getLetter(int x, int y){
+	public Letter getLetter(int x, int y){
 		return board_letters.get(y).get(x);
 	}
 	/**
@@ -107,10 +109,11 @@ public class Board {
 		
 	}
 	*/
-	/**
+	/*
 	 * Returns whether the current word can be found in the dictionary.
 	 * @return true if the current word can be found in the dictionary.
-	 */
+	
+	
 	public boolean checkWord(){
 		File dictionary = FileStorer.getDictionary();
 		Scanner sc = new Scanner(dictionary);
@@ -126,11 +129,23 @@ public class Board {
 		
 		return valid_word;
 	}
+	*/
 	/**
 	 * Returns the string representation of the currently selected letters.
 	 * @return The string representation of the currently selected letters.
 	 */
-	private String getCurWordString() {
+	public void pickLetter(int x, int y){
+		cur_word.add(board_letters.get(y).get(x));
+	}
+	public void removeLetter(){
+		cur_word.remove(cur_word.size()-1);
+	}
+	
+	public Letter getLastLetter(){
+		return cur_word.get(cur_word.size()-1);
+	}
+	
+	public String getCurWordString() {
 		String string_current_word = "";
 		for(int i = 0; i < cur_word.size(); i++){
 			string_current_word+=cur_word.get(i).getCharacter();
