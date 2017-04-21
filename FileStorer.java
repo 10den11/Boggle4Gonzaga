@@ -2,11 +2,12 @@ package FileStorer;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class FileStorer {
 	
-	private int highscoreInt;
+	private ArrayList<Integer> highScoreArray = new ArrayList<Integer>();
 	private int boardSize;
 	private int timeLimit;
 	private ArrayList<Integer> settingsArray = new ArrayList<Integer>(); 
@@ -24,15 +25,26 @@ public class FileStorer {
     	
     }
     
-    public int getHighScore() throws FileNotFoundException{
-    	return highscoreInt;
+    public ArrayList<Integer> getHighScore() throws FileNotFoundException{
+    	return highScoreArray;
 
     }
     public void setHighScore(int newScore) throws IOException {
     	
-    	highscoreInt = newScore;
+    	highScoreArray.add(newScore);
+    	Collections.sort(highScoreArray);
+    	
+    	StringBuilder previousHighScores = new StringBuilder();
+    	Scanner inFile = new Scanner(highscore);
+    	while ((line = inFile.nextLine()) != null)
+    	{
+    		previousHighScores.append(line);
+    		previousHighScores.append("\n");
+    	}
+    	
     	
     	FileWriter outFile = new FileWriter("highscore.txt");
+    	outFile.append(previousHighScores);
     	outFile.write(newScore);
     	outFile.close();
     }
