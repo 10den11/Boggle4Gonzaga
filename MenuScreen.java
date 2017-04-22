@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -26,6 +27,7 @@ class MenuFrame extends JFrame {
 	private Box box;
 	private Board game;
 	private ArrayList<ArrayList<JToggleButton>> BoardButtons;
+	private ScoreCard scorecard;
 	
 	public MenuFrame() {
 		
@@ -252,8 +254,15 @@ class MenuFrame extends JFrame {
 		remove(box);
 		remove(menuScreen);
 		int size = 6;
+		//JPanel centerPanel = new JPanel();
+		JButton selectButton = new JButton(new SelectListener(size));
+		selectButton.setIcon(new ImageIcon("select.png"));
+		selectButton.setPreferredSize(new Dimension(241,172));
+		JLabel curWord = new JLabel(new ImageIcon (""));
 		//int size = files.getBoardSize();
 		game = new Board(size);
+		System.out.print(game);
+		scorecard = new ScoreCard(size);
 		menuScreen.setLayout(new GridLayout(size,size));
 		
 		BoardButtons = new ArrayList<ArrayList<JToggleButton>>();
@@ -262,7 +271,6 @@ class MenuFrame extends JFrame {
 			ArrayList<JToggleButton> row = new ArrayList<JToggleButton>();
 			for(int j = 0; j < size; j++){
 				JToggleButton LB = new JToggleButton(new LetterAction(j,i,size));
-				String character = game.getLetter(j,i).getCharacter();
 				LB.setIcon(new ImageIcon("start.png"));
 				row.add(LB);
 				menuScreen.add(LB);
@@ -270,6 +278,12 @@ class MenuFrame extends JFrame {
 			}
 			BoardButtons.add(row);
 		}
+		JPanel bottomMiddle = new JPanel();
+		
+		bottomMiddle.add(curWord);
+		bottomMiddle.add(selectButton);
+		bottomMiddle.setBackground(Color.BLACK);
+		add(bottomMiddle, BorderLayout.SOUTH);
 		
 		menuScreen.revalidate();
 		menuScreen.repaint();
@@ -309,12 +323,12 @@ class MenuFrame extends JFrame {
 						}
 					}
 				}
-				
 			} else {
 				game.pickLetter(x,y);
 				enableAroundCenter(x,y);
 			}
 			BoardButtons.get(y).get(x).setEnabled(true);
+			System.out.println(game.getCurWordString());
 		}
 		private void enableAroundCenter(int a, int b){
 			if(a-1 >= 0){
@@ -336,6 +350,14 @@ class MenuFrame extends JFrame {
 						BoardButtons.get(b+1).get(a).setEnabled(true);
 				}
 			}
+			if(b-1 >=0){
+				if(!BoardButtons.get(b-1).get(a).isSelected())
+					BoardButtons.get(b-1).get(a).setEnabled(true);
+			}
+			if(b+1 < size){
+				if(!BoardButtons.get(b+1).get(a).isSelected())
+					BoardButtons.get(b+1).get(a).setEnabled(true);
+			}
 			if(a+1 < size){
 				if(b-1 >= 0){
 					if(!BoardButtons.get(b-1).get(a+1).isSelected())
@@ -349,12 +371,48 @@ class MenuFrame extends JFrame {
 				}
 			}
 			if(game.getCurWordString().isEmpty()){
-				for(int i = 0; i < size; i++){
-					for(int j = 0; j < size; j++){
-						BoardButtons.get(b).get(a).setEnabled(true);
-					}
-				}
+				resetBoard(size);
 			}
 		}
+	}
+	public class SelectListener extends AbstractAction{
+		private int size;
+		
+		public SelectListener(int boardsize){
+			size = boardsize;
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			String word = game.getCurWordString();
+			try {
+				if(files.checkForWord(word)){
+					if(scorecard.scoreWord(word)){
+						//update scorecard UX
+						//refresh board
+						
+						resetBoard(size);
+					} else {
+						resetBoard(size);
+					}
+				}  else {
+					resetBoard(size);
+					//display invalid word message
+				}
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			System.out.println(scorecard.getScoredWords());
+			System.out.println(scorecard.getTotal());
+		}
+		
+	}
+	public void resetBoard(int size){
+		for(int i = 0; i < size; i++){
+			for(int j = 0; j < size; j++){
+				BoardButtons.get(i).get(j).setEnabled(true);
+				BoardButtons.get(i).get(j).setSelected(false);
+			}
+		}
+		game.clearCurWord();
 	}
 }

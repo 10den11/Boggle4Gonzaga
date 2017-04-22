@@ -108,27 +108,6 @@ public class Board {
 		
 	}
 	*/
-	/*
-	 * Returns whether the current word can be found in the dictionary.
-	 * @return true if the current word can be found in the dictionary.
-	
-	
-	public boolean checkWord(){
-		File dictionary = FileStorer.getDictionary();
-		Scanner sc = new Scanner(dictionary);
-		String word = getCurWordString();
-		
-		boolean valid_word = false;
-		
-		while(sc.hasNextLine()){
-			String x = sc.nextLine();
-			if(x.equalsIgnoreCase(word))
-				valid_word = true;
-		}
-		
-		return valid_word;
-	}
-	*/
 	/**
 	 * Returns the string representation of the currently selected letters.
 	 * @return The string representation of the currently selected letters.
@@ -150,5 +129,9 @@ public class Board {
 			string_current_word+=cur_word.get(i).getCharacter();
 		}
 		return string_current_word;
+	}
+	//clears the current word
+	public void clearCurWord(){
+		cur_word = new ArrayList<Letter>();
 	}
 }

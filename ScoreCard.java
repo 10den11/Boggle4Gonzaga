@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 
 public class ScoreCard {
-	private ArrayList scoredWords = new ArrayList<String>();
-	private ArrayList scoredPoints = new ArrayList<Integer>();
+	private ArrayList<String> scoredWords = new ArrayList<String>();
+	private ArrayList<Integer> scoredPoints = new ArrayList<Integer>();
 	private int Size;
 	private int Total;
 	
@@ -17,7 +17,7 @@ public class ScoreCard {
 		Boolean alreadyScored = false;
 		for(int k = 0; k < scoredWords.size(); k++)
 		{
-			if(newWord.equals(scoredWords.get(k)))
+			if(newWord.equalsIgnoreCase(scoredWords.get(k)))
 			{
 				alreadyScored = true;
 			}
@@ -114,11 +114,11 @@ public class ScoreCard {
 			return false;
 		}
 	}
-	public ArrayList getScoredWords()
+	public ArrayList<String> getScoredWords()
 	{
 		return scoredWords;
 	}
-	public ArrayList geScoredPoints()
+	public ArrayList<Integer> geScoredPoints()
 	{
 		return scoredPoints;
 	}
