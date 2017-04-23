@@ -263,7 +263,11 @@ class MenuFrame extends JFrame {
 		game = new Board(size);
 		System.out.print(game);
 		scorecard = new ScoreCard(size);
-		menuScreen.setLayout(new GridLayout(size,size));
+		GridLayout GL = new GridLayout(size,size);
+		GL.setHgap(0);
+		GL.setVgap(0);
+		
+		menuScreen.setLayout(GL);
 		
 		BoardButtons = new ArrayList<ArrayList<JToggleButton>>();
 		
@@ -271,7 +275,8 @@ class MenuFrame extends JFrame {
 			ArrayList<JToggleButton> row = new ArrayList<JToggleButton>();
 			for(int j = 0; j < size; j++){
 				JToggleButton LB = new JToggleButton(new LetterAction(j,i,size));
-				LB.setIcon(new ImageIcon("start.png"));
+				LB.setIcon(new ImageIcon("letters/"+game.getLetter(j, i).getCharacter().toUpperCase()+"_SL.png"));
+				LB.setPreferredSize(new Dimension(128,128));
 				row.add(LB);
 				menuScreen.add(LB);
 				
@@ -284,6 +289,14 @@ class MenuFrame extends JFrame {
 		bottomMiddle.add(selectButton);
 		bottomMiddle.setBackground(Color.BLACK);
 		add(bottomMiddle, BorderLayout.SOUTH);
+		
+		JPanel scorecardPanel = new JPanel();
+		scorecardPanel.setBackground(Color.BLACK);
+		add(scorecardPanel, BorderLayout.EAST);
+		
+		JPanel leftPanel = new JPanel();
+		leftPanel.setBackground(Color.BLACK);
+		add(leftPanel, BorderLayout.WEST);
 		
 		menuScreen.revalidate();
 		menuScreen.repaint();
@@ -309,7 +322,8 @@ class MenuFrame extends JFrame {
 				}
 			}
 			if(!BoardButtons.get(y).get(x).isSelected()){
-				
+				BoardButtons.get(y).get(x).setIcon(
+						new ImageIcon("letters/"+game.getLetter(x, y).getCharacter().toUpperCase()+"_Un.png"));
 				game.removeLetter();
 				if(!game.getCurWordString().isEmpty()){
 					int x_temp = game.getLastLetter().getX();
@@ -317,63 +331,88 @@ class MenuFrame extends JFrame {
 					enableAroundCenter(x_temp,y_temp);
 					BoardButtons.get(y_temp).get(x_temp).setEnabled(true);
 				} else {
-					for(int i = 0; i < size; i++){
-						for(int j = 0; j < size; j++){
-							BoardButtons.get(i).get(j).setEnabled(true);
-						}
-					}
+					resetBoard(size);
 				}
 			} else {
+				BoardButtons.get(y).get(x).setIcon(
+						new ImageIcon("letters/"+game.getLetter(x, y).getCharacter().toUpperCase()+"_Last.png"));
 				game.pickLetter(x,y);
 				enableAroundCenter(x,y);
 			}
 			BoardButtons.get(y).get(x).setEnabled(true);
 			System.out.println(game.getCurWordString());
 		}
+		
+		/*
+		 *      a-1,b+1		a,b+1     a+1,b+1
+		 * 		a-1.b	    a,b	      a+1,b
+		 * 		a-1,b-1	    a,b+1	  a+1,b-1
+		 * 
+		 */
 		private void enableAroundCenter(int a, int b){
-			if(a-1 >= 0){
-				if(b-1 >= 0){
-					if(!BoardButtons.get(b-1).get(a-1).isSelected())
-						BoardButtons.get(b-1).get(a-1).setEnabled(true);
-					if(!BoardButtons.get(b-1).get(a).isSelected())
-						BoardButtons.get(b-1).get(a).setEnabled(true);
+			if(a-1>=0){
+				if(b-1>=0){
+					if(!BoardButtons.get(b-1).get(a-1).isSelected()){  
+						enableHelper(a-1,b-1);
+					} else {
+						prevEnabled(a-1,b-1);
+					}
 				}
-				if(b >= 0){
-					if(!BoardButtons.get(b).get(a-1).isSelected())
-						BoardButtons.get(b).get(a-1).setEnabled(true);
-					
+				if(!BoardButtons.get(b).get(a-1).isSelected()){
+					enableHelper(a-1,b);
+				} else {
+					prevEnabled(a-1,b);
 				}
-				if(b+1 < size){
-					if(!BoardButtons.get(b+1).get(a-1).isSelected())
-						BoardButtons.get(b+1).get(a-1).setEnabled(true);
-					if(!BoardButtons.get(b+1).get(a).isSelected())
-						BoardButtons.get(b+1).get(a).setEnabled(true);
-				}
-			}
-			if(b-1 >=0){
-				if(!BoardButtons.get(b-1).get(a).isSelected())
-					BoardButtons.get(b-1).get(a).setEnabled(true);
-			}
-			if(b+1 < size){
-				if(!BoardButtons.get(b+1).get(a).isSelected())
-					BoardButtons.get(b+1).get(a).setEnabled(true);
-			}
-			if(a+1 < size){
-				if(b-1 >= 0){
-					if(!BoardButtons.get(b-1).get(a+1).isSelected())
-						BoardButtons.get(b-1).get(a+1).setEnabled(true);
-				}
-				if(!BoardButtons.get(b).get(a+1).isSelected())
-					BoardButtons.get(b).get(a+1).setEnabled(true);	
-				if(b+1 < size){
-					if(!BoardButtons.get(b+1).get(a+1).isSelected())
-						BoardButtons.get(b+1).get(a+1).setEnabled(true);
+				if(b+1<size){
+					if(!BoardButtons.get(b+1).get(a-1).isSelected()){
+						enableHelper(a-1,b+1);
+					}
 				}
 			}
-			if(game.getCurWordString().isEmpty()){
-				resetBoard(size);
+			//a
+			if(b-1>=0){
+				if(!BoardButtons.get(b-1).get(a).isSelected()){
+					enableHelper(a,b-1);
+				} else {
+					prevEnabled(a,b-1);
+				}
+			}
+			if(b+1<size){
+				if(!BoardButtons.get(b+1).get(a).isSelected()){
+					enableHelper(a,b+1);
+				} else {
+					prevEnabled(a,b+1);
+				}
+			}
+			
+			if(a+1<size){
+				if(b-1>=0){
+					if(!BoardButtons.get(b-1).get(a+1).isSelected()){
+						enableHelper(a+1,b-1);
+					}	else {
+						prevEnabled(a+1,b-1);
+					}
+				}
+				if(!BoardButtons.get(b).get(a+1).isSelected()){
+					enableHelper(a+1,b);
+				} else {
+					prevEnabled(a+1,b);
+				}
+				if(b+1<size){
+					if(!BoardButtons.get(b+1).get(a+1).isSelected()){
+						enableHelper(a+1,b+1);
+					} else {
+						prevEnabled(a+1,b+1);
+					}
+				}
+			}
+			if(BoardButtons.get(b).get(a).isSelected()){
+				BoardButtons.get(b).get(a).setIcon(
+					new ImageIcon("letters/"+game.getLetter(a, b).getCharacter().toUpperCase()+"_Last.png"));
 			}
 		}
+			
+		
 	}
 	public class SelectListener extends AbstractAction{
 		private int size;
@@ -411,8 +450,20 @@ class MenuFrame extends JFrame {
 			for(int j = 0; j < size; j++){
 				BoardButtons.get(i).get(j).setEnabled(true);
 				BoardButtons.get(i).get(j).setSelected(false);
+				BoardButtons.get(i).get(j).setIcon(
+						new ImageIcon("letters/"+game.getLetter(j,i).getCharacter().toUpperCase()+"_SL.png"));
 			}
 		}
 		game.clearCurWord();
+	}
+	public void enableHelper(int a, int b){
+		BoardButtons.get(b).get(a).setEnabled(true);
+		BoardButtons.get(b).get(a).setIcon(
+			new ImageIcon("letters/"+game.getLetter(a,b).getCharacter().toUpperCase()+"_SL.png"));
+
+	}
+	public void prevEnabled(int a, int b){
+		BoardButtons.get(b).get(a).setIcon(
+			new ImageIcon("letters/"+game.getLetter(a,b).getCharacter().toUpperCase()+"_SL.png"));
 	}
 }
