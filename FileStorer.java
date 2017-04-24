@@ -154,9 +154,9 @@ public class FileStorer {
     	}
     }
     
-    public int getLowestHighScore()
+    public Boolean checkIfNewHighScore(int testValue)
     {
-    	return HighScorePoints[boardSize][timeLimit][9];
+    	return (HighScorePoints[boardSize][timeLimit][9] < testValue);
     }
     
     public int[] getAllHighScorePoints()
@@ -184,13 +184,15 @@ public class FileStorer {
     		HighScorePoints[boardSize][timeLimit][k + 1] = HighScorePoints[boardSize][timeLimit][k];
     		HighScoreNames[boardSize][timeLimit][k + 1] = HighScoreNames[boardSize][timeLimit][k];
     	}
+    	HighScorePoints[boardSize][timeLimit][scorePlacement] = score;
+    	HighScoreNames[boardSize][timeLimit][scorePlacement] = name;
     	try {
     		currentWriter1 = new PrintWriter("highscores/" + boardSize + timeLimit + "_points.txt");
     		currentWriter2 = new PrintWriter("highscores/" + boardSize + timeLimit + "_names.txt");
     		for(int k = 0; k < 10; k++)
     		{
-    			currentWriter1.println(score + "");
-    			currentWriter2.println(name);
+    			currentWriter1.println(HighScorePoints[boardSize][timeLimit][k] + "");
+    			currentWriter2.println(HighScoreNames[boardSize][timeLimit][k]);
     		}
     		currentWriter1.close();
     		currentWriter2.close();
@@ -254,10 +256,10 @@ public class FileStorer {
     	}
     	return false;
     }
-    
-    public static void main(String[] args) throws IOException{
-        FileStorer file = new FileStorer();
-        file.setSettings(3,4);
+    public static void main(String[] args) {
+    	FileStorer test = new FileStorer();
+    	test.newHighScore("Billy", 33);
+    	test.newHighScore("Dominic", 17);
+    	test.newHighScore("Jimbo", 66);
     }
-
 }
