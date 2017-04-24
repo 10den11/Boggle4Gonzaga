@@ -38,6 +38,9 @@ class MenuFrame extends JFrame {
 	private ScoreCard scorecard;
 	private WordPanel word_panel;
 	private ScorePanel score_panel;
+	private JPanel panel_left;
+	private JPanel panel_right;
+	private JPanel panel_bottom;
 	
 	
 	public MenuFrame() throws IOException {
@@ -48,9 +51,14 @@ class MenuFrame extends JFrame {
 		box = Box.createVerticalBox();
 		files = new FileStorer();
 		files.setSettings(files.getTimeLimit(), files.getBoardSize());
-		paintMenu();
+		paintMenu(0);
 	}
-	public void paintMenu(){
+	public void paintMenu(int finished){
+		if(finished == 1){
+			remove(panel_left);
+			remove(panel_right);
+			remove(panel_bottom);
+		}
 		menuScreen.removeAll();
 		box.removeAll();
 		menuScreen.setLayout(new FlowLayout());
@@ -267,7 +275,7 @@ class MenuFrame extends JFrame {
 	}
 	public class BackListener extends AbstractAction{
 		public void actionPerformed(ActionEvent e){
-			paintMenu();
+			paintMenu(0);
 		}
 	}
 	public class StartListener extends AbstractAction{
@@ -333,6 +341,8 @@ class MenuFrame extends JFrame {
 		bottomMiddle.add(word_panel);
 		bottomMiddle.add(selectButton);
 		bottomMiddle.setBackground(Color.BLACK);
+		panel_bottom = bottomMiddle;
+		
 		JPanel fillertwo = new JPanel();
 		fillertwo.setBackground(Color.BLACK);
 		fillertwo.setPreferredSize(new Dimension(500,1));
@@ -343,6 +353,7 @@ class MenuFrame extends JFrame {
 		scorecardPanel.setBackground(Color.BLACK);
 		scorecardPanel.add(score_panel);
 		add(scorecardPanel, BorderLayout.EAST);
+		panel_right = scorecardPanel;
 		
 		JPanel leftPanel = new JPanel();
 		leftPanel.setBackground(Color.BLACK);
@@ -351,6 +362,7 @@ class MenuFrame extends JFrame {
 		leftPanel.add(label);
 		add(leftPanel, BorderLayout.WEST);
 		
+		panel_left = leftPanel;
 		
 		menuScreen.revalidate();
 		menuScreen.repaint();
@@ -360,8 +372,40 @@ class MenuFrame extends JFrame {
 	}
 	private class FinishedListener extends AbstractAction{
 		public void actionPerformed(ActionEvent e){
-			
+			game.clearCurWord();
+			showEndGameScreen();
 		}
+	}
+	public void showEndGameScreen(){
+		menuScreen.removeAll();
+		menuScreen.setLayout(new BorderLayout());
+		EndPanel done = new EndPanel();
+		done.setPreferredSize(new Dimension(400,400));
+		menuScreen.add(done, BorderLayout.NORTH);
+		menuScreen.setBackground(new Color(255,97,48));
+		//if(files.checkIfNewHighScore(scorecard.getTotal())){
+			HighscorePanel highPanel = new HighscorePanel();
+			menuScreen.add(highPanel, BorderLayout.CENTER);
+		//}
+		JButton back_button = new JButton(new MenuListener());
+		back_button.setIcon(new ImageIcon("back_end.png"));
+		back_button.setPreferredSize(new Dimension(333, 171));
+		back_button.setOpaque(false);
+		back_button.setContentAreaFilled(false);
+		back_button.setBorderPainted(false);
+		menuScreen.add(back_button, BorderLayout.SOUTH);
+		menuScreen.revalidate();
+		menuScreen.repaint();
+		revalidate();
+		repaint();
+		
+	}
+	private class MenuListener extends AbstractAction{
+
+		public void actionPerformed(ActionEvent e) {
+		paintMenu(1);
+		}
+		
 	}
 	private class LetterAction extends AbstractAction{
 		private int x;
@@ -514,14 +558,12 @@ class MenuFrame extends JFrame {
 		game.clearCurWord();
 		word_panel.updateword();
 		word_panel.repaint();
-		score_panel.repaint();
-		
+		score_panel.repaint();	
 	}
 	public void enableHelper(int a, int b){
 		BoardButtons.get(b).get(a).setEnabled(true);
 		BoardButtons.get(b).get(a).setIcon(
 			new ImageIcon("letters/"+game.getLetter(a,b).getCharacter().toUpperCase()+"_SL.png"));
-
 	}
 	public void prevEnabled(int a, int b){
 		BoardButtons.get(b).get(a).setIcon(
@@ -584,6 +626,23 @@ class MenuFrame extends JFrame {
 			}
 			g.setFont(new Font("Arial", Font.BOLD, 64));
 			g.drawString(total+"", 240, 800);
+		}
+	}
+	public class EndPanel extends JPanel {
+		public void paintComponent(Graphics g){
+			super.setBackground(new Color(255,97,48));
+			super.paintComponent(g);
+			g.setFont(new Font("Arial", Font.BOLD, 128));
+			g.drawString("Game Over", 100, 100);
+		}
+	}
+	public class HighscorePanel extends JPanel {
+		public void paintComponent(Graphics g){
+			super.setBackground(new Color(255,97,48));
+			super.paintComponent(g);
+			g.setFont(new Font("Arial", Font.BOLD, 64));
+			g.drawString("New Highscore!", 200, 50);
+			g.drawString("Enter Your Name", 200, 128);
 		}
 	}
 }
