@@ -41,6 +41,7 @@ class MenuFrame extends JFrame {
 	private JPanel panel_left;
 	private JPanel panel_right;
 	private JPanel panel_bottom;
+	private JPanel panel_top;
 	
 	
 	public MenuFrame() throws IOException {
@@ -58,6 +59,7 @@ class MenuFrame extends JFrame {
 			remove(panel_left);
 			remove(panel_right);
 			remove(panel_bottom);
+			remove(panel_top);
 		}
 		menuScreen.removeAll();
 		box.removeAll();
@@ -109,10 +111,6 @@ class MenuFrame extends JFrame {
 		repaint();
 	}
 	public class HighScoreListner extends AbstractAction{
-		private JPanel titleScreen;
-	    private JPanel placementScreen;
-	    private JPanel selectionScreen;
-	    private JPanel backScreen;
 	    private int[] currentHighPoints;
 	    private String[] currentHighNames;
 	    private JLabel place[] = new JLabel[10];
@@ -126,25 +124,25 @@ class MenuFrame extends JFrame {
 		    menuScreen = new JPanel();
 			menuScreen.setLayout(new GridLayout(0, 1));
 			menuScreen.setBackground(Color.BLACK);
-			titleScreen = new JPanel();
-			titleScreen.setBackground(Color.BLACK);
-			placementScreen = new JPanel();
-			placementScreen.setBackground(Color.BLACK);
-			selectionScreen = new JPanel();
-			selectionScreen.setBackground(Color.BLACK);
-			selectionScreen.setLayout(new GridLayout(0, 1));
-			backScreen = new JPanel();
-			backScreen.setBackground(Color.BLACK);
+			panel_left = new JPanel();
+			panel_left.setBackground(Color.BLACK);
+			panel_right = new JPanel();
+			panel_right.setBackground(Color.BLACK);
+			panel_top = new JPanel();
+			panel_top.setBackground(Color.BLACK);
+			panel_top.setLayout(new GridLayout(0, 1));
+			panel_bottom = new JPanel();
+			panel_bottom.setBackground(Color.BLACK);
 			
 			files = new FileStorer();
 			currentHighPoints = files.getAllHighScorePoints(files.getBoardSize(), files.getTimeLimit());
 			currentHighNames = files.getAllHighScoreNames(files.getBoardSize(), files.getTimeLimit());
 			
 			JLabel title = new JLabel("", new ImageIcon("highscore.png"), JLabel.CENTER);
-			titleScreen.add(title);
+			panel_left.add(title);
 			
 			JLabel placements = new JLabel ("", new ImageIcon("placements.png"), JLabel.CENTER);
-			placementScreen.add(placements);
+			panel_right.add(placements);
 			
 			for(int k = 0; k < 10; k++)
 			{
@@ -176,28 +174,28 @@ class MenuFrame extends JFrame {
 				selection[k][5].addActionListener(new highListner(k, 5));
 				selection[k][5].setBackground(new Color(66, 124, 184));
 				
-				selectionScreen.add(selection[k][0]);
-				selectionScreen.add(selection[k][1]);
-				selectionScreen.add(selection[k][3]);
-				selectionScreen.add(selection[k][5]);
+				panel_top.add(selection[k][0]);
+				panel_top.add(selection[k][1]);
+				panel_top.add(selection[k][3]);
+				panel_top.add(selection[k][5]);
 			}
 			selection[files.getBoardSize()][files.getTimeLimit()].setEnabled(false);
 			
-			JButton back_button = new JButton(new BackListener());
+			JButton back_button = new JButton(new MenuListener());
 			back_button.setIcon(new ImageIcon("back.png"));
 			back_button.setPreferredSize(new Dimension(333, 171));
 			back_button.setOpaque(false);
 			back_button.setContentAreaFilled(false);
 			back_button.setBorderPainted(false);
-			backScreen.add(back_button);
+			panel_bottom.add(back_button);
 			
 			menuScreen.revalidate();
 			menuScreen.repaint();
-			add(placementScreen, BorderLayout.WEST);
+			add(panel_right, BorderLayout.WEST);
 			add(menuScreen, BorderLayout.CENTER);
-			add(titleScreen, BorderLayout.NORTH);
-			add(selectionScreen, BorderLayout.EAST);
-			add(backScreen, BorderLayout.SOUTH);
+			add(panel_left, BorderLayout.NORTH);
+			add(panel_top, BorderLayout.EAST);
+			add(panel_bottom, BorderLayout.SOUTH);
 			revalidate();
 			repaint();
 			
@@ -473,6 +471,8 @@ class MenuFrame extends JFrame {
 		bottomMiddle.add(selectButton);
 		bottomMiddle.setBackground(Color.BLACK);
 		panel_bottom = bottomMiddle;
+		
+		panel_top = new JPanel();
 		
 		JPanel fillertwo = new JPanel();
 		fillertwo.setBackground(Color.BLACK);
