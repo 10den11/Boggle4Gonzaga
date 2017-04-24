@@ -65,7 +65,7 @@ class MenuFrame extends JFrame {
 		
 		JButton PlayButton = new JButton(new StartListener());
 		JButton OptionButton = new JButton(new OptionListener());
-		JButton HighScoreButton = new JButton();
+		JButton HighScoreButton = new JButton(new HighScoreListner());
 		ImageIcon TitleIcon = new ImageIcon("title.png");
 		JLabel titleLabel = new JLabel ("", TitleIcon, JLabel.CENTER);
 		box.setOpaque(true);
@@ -107,6 +107,133 @@ class MenuFrame extends JFrame {
 		add(menuScreen,BorderLayout.NORTH);
 		revalidate();
 		repaint();
+	}
+	public class HighScoreListner extends AbstractAction{
+		private JPanel titleScreen;
+	    private JPanel placementScreen;
+	    private JPanel selectionScreen;
+	    private JPanel backScreen;
+	    private int[] currentHighPoints;
+	    private String[] currentHighNames;
+	    private JLabel place[] = new JLabel[10];
+	    private JButton selection[][] = new JButton[7][];
+	    
+		public void actionPerformed(ActionEvent e) {
+			menuScreen.removeAll();
+			box.removeAll();
+			remove(box);
+			remove(menuScreen);
+		    menuScreen = new JPanel();
+			menuScreen.setLayout(new GridLayout(0, 1));
+			menuScreen.setBackground(Color.BLACK);
+			titleScreen = new JPanel();
+			titleScreen.setBackground(Color.BLACK);
+			placementScreen = new JPanel();
+			placementScreen.setBackground(Color.BLACK);
+			selectionScreen = new JPanel();
+			selectionScreen.setBackground(Color.BLACK);
+			selectionScreen.setLayout(new GridLayout(0, 1));
+			backScreen = new JPanel();
+			backScreen.setBackground(Color.BLACK);
+			
+			files = new FileStorer();
+			currentHighPoints = files.getAllHighScorePoints(files.getBoardSize(), files.getTimeLimit());
+			currentHighNames = files.getAllHighScoreNames(files.getBoardSize(), files.getTimeLimit());
+			
+			JLabel title = new JLabel("", new ImageIcon("highscore.png"), JLabel.CENTER);
+			titleScreen.add(title);
+			
+			JLabel placements = new JLabel ("", new ImageIcon("placements.png"), JLabel.CENTER);
+			placementScreen.add(placements);
+			
+			for(int k = 0; k < 10; k++)
+			{
+				place[k] = new JLabel(currentHighNames[k] + ":" + currentHighPoints[k]);
+				
+				place[k].setFont(new Font("Arial", Font.ROMAN_BASELINE, 72));
+				if(k % 2 == 0)
+				{
+					place[k].setForeground(new Color(255, 97, 48));
+				} else
+				{
+					place[k].setForeground(new Color(66, 124, 184));
+				}
+				menuScreen.add(place[k]);
+			}
+			for(int k = 4; k <= 6; k++)
+			{
+				selection[k] = new JButton[6];
+				selection[k][0] = new JButton("Board = " + k + "x" + k + ", Time = Unlimited");
+				selection[k][0].addActionListener(new highListner(k, 0));
+				selection[k][1] = new JButton("Board = " + k + "x" + k + ", Time = 1 minute");
+				selection[k][1].addActionListener(new highListner(k, 1));
+				selection[k][3] = new JButton("Board = " + k + "x" + k + ", Time = 3 minutes");
+				selection[k][3].addActionListener(new highListner(k, 3));
+				selection[k][5] = new JButton("Board = " + k + "x" + k + ", Time = 5 minutes");
+				selection[k][5].addActionListener(new highListner(k, 5));
+				
+				selectionScreen.add(selection[k][0]);
+				selectionScreen.add(selection[k][1]);
+				selectionScreen.add(selection[k][3]);
+				selectionScreen.add(selection[k][5]);
+			}
+			selection[files.getBoardSize()][files.getTimeLimit()].setEnabled(false);
+			
+			JButton back_button = new JButton(new BackListener());
+			back_button.setIcon(new ImageIcon("back.png"));
+			back_button.setPreferredSize(new Dimension(333, 171));
+			back_button.setOpaque(false);
+			back_button.setContentAreaFilled(false);
+			back_button.setBorderPainted(false);
+			backScreen.add(back_button);
+			
+			menuScreen.revalidate();
+			menuScreen.repaint();
+			add(placementScreen, BorderLayout.WEST);
+			add(menuScreen, BorderLayout.CENTER);
+			add(titleScreen, BorderLayout.NORTH);
+			add(selectionScreen, BorderLayout.EAST);
+			add(back_button, BorderLayout.SOUTH);
+			revalidate();
+			repaint();
+			
+			
+		}
+		public class highListner extends AbstractAction{
+			private int board;
+			private int minutes;
+			public highListner(int size, int time)
+			{
+				board = size;
+				minutes = time;
+			}
+			public void actionPerformed(ActionEvent e) {
+				currentHighPoints = files.getAllHighScorePoints(board, minutes);
+				currentHighNames = files.getAllHighScoreNames(board, minutes);
+				
+				for(int k = 0; k < 10; k++)
+				{
+					place[k].setText(currentHighNames[k] + ":" + currentHighPoints[k]);
+					if(k % 2 == 0)
+					{
+						place[k].setForeground(new Color(255, 97, 48));
+					} else
+					{
+						place[k].setForeground(new Color(66, 124, 184));
+					}
+				}
+				menuScreen.revalidate();
+				menuScreen.repaint();
+				for(int k = 4; k <= 6; k++)
+				{
+					selection[k][0].setEnabled(true);
+					selection[k][1].setEnabled(true);
+					selection[k][3].setEnabled(true);
+					selection[k][5].setEnabled(true);
+				}
+				selection[board][minutes].setEnabled(false);
+			}
+		}
 	}
 	public class OptionListener extends AbstractAction {
 		/**
