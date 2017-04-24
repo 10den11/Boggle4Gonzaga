@@ -1,10 +1,12 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 public class MenuScreen {
 
@@ -35,6 +37,7 @@ class MenuFrame extends JFrame {
 	private ArrayList<ArrayList<JToggleButton>> BoardButtons;
 	private ScoreCard scorecard;
 	private WordPanel word_panel;
+	private ScorePanel score_panel;
 	
 	
 	public MenuFrame() throws IOException {
@@ -285,16 +288,21 @@ class MenuFrame extends JFrame {
 		selectButton.setOpaque(false);
 		selectButton.setContentAreaFilled(false);
 		selectButton.setBorderPainted(false);
-		WordPanel curWord = new WordPanel();
-		curWord.setBackground(new Color(255,97,48));
-		curWord.setPreferredSize(new Dimension(570,160));
-		word_panel = curWord;
+		
+		word_panel = new WordPanel();
+		word_panel.setBackground(new Color(255,97,48));
+		word_panel.setPreferredSize(new Dimension(570,160));
+		
+		
 		game = new Board(size);
 		System.out.print(game);
 		scorecard = new ScoreCard(size);
 		GridLayout GL = new GridLayout(size,size);
 		GL.setHgap(0);
 		GL.setVgap(0);
+		
+		score_panel = new ScorePanel();
+		score_panel.setPreferredSize(new Dimension(563,856));
 		
 		menuScreen.setLayout(GL);
 		
@@ -317,13 +325,15 @@ class MenuFrame extends JFrame {
 		}
 		JPanel bottomMiddle = new JPanel();
 		
-		bottomMiddle.add(curWord);
+		bottomMiddle.add(word_panel);
 		bottomMiddle.add(selectButton);
 		bottomMiddle.setBackground(Color.BLACK);
 		add(bottomMiddle, BorderLayout.SOUTH);
 		
 		JPanel scorecardPanel = new JPanel();
 		scorecardPanel.setBackground(Color.BLACK);
+		//score_panel.setBackground(Color.BLACK);
+		scorecardPanel.add(score_panel);
 		add(scorecardPanel, BorderLayout.EAST);
 		
 		JPanel leftPanel = new JPanel();
@@ -494,6 +504,7 @@ class MenuFrame extends JFrame {
 		game.clearCurWord();
 		word_panel.updateword();
 		word_panel.repaint();
+		score_panel.repaint();
 		
 	}
 	public void enableHelper(int a, int b){
@@ -527,5 +538,36 @@ class MenuFrame extends JFrame {
 	    		super.setFont(new Font("Arial", Font.BOLD, 64));
 	    }
 
+	}
+	public class ScorePanel extends JPanel {
+		private ArrayList<Integer> points;
+		private ArrayList<String> words;
+		private int Total;
+		
+		public ScorePanel(){
+			points = scorecard.getScoredPoints();
+			words = scorecard.getScoredWords();
+			Total = scorecard.getTotal();
+		}
+		public void paintComponent(Graphics g){
+			super.paintComponent(g);
+			super.setFont(new Font("Arial", Font.BOLD, 32));
+			
+			ImageIcon pre = new ImageIcon("letters/scorecard.png");
+			Image post = pre.getImage();
+			g.drawImage(post, 0, 0, null);
+			
+				
+			
+			points = scorecard.getScoredPoints();
+			words = scorecard.getScoredWords();
+			Total = scorecard.getTotal();
+			
+			words = scorecard.getScoredWords();
+			points = scorecard.getScoredPoints();
+			for(int i = 0; i < words.size(); i++){
+				g.drawString(words.get(i), 50, 50*i);
+			}
+		}
 	}
 }

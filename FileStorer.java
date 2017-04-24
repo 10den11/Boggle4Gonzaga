@@ -257,10 +257,4 @@ public class FileStorer {
     	}
     	return false;
     }
-    public static void main(String[] args) {
-    	FileStorer test = new FileStorer();
-    	test.newHighScore("Billy", 33);
-    	test.newHighScore("Dominic", 17);
-    	test.newHighScore("Jimbo", 66);
-    }
 }
