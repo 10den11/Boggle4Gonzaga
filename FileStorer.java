@@ -103,8 +103,18 @@ public class FileStorer {
     			HighScoreNames[k][5][n] = currentReader2.nextLine();
     		}
     	}
+    	try{
+    		currentReader1 = new Scanner(new File ("settings.txt"));
+    	}
+    	catch(Exception e)
+		{
+			System.out.println("You done fucked up");
+		}
+    	boardSize = currentReader1.nextInt();
+    	timeLimit = currentReader1.nextInt();
     	settingsArray.add(5);
     	settingsArray.add(5);
+    	
     }
     
     public void mySort(String filename, ArrayList<String> arrayList)
