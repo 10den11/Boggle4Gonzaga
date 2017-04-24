@@ -47,7 +47,7 @@ class MenuFrame extends JFrame {
 		menuScreen.setBackground(Color.BLACK);
 		box = Box.createVerticalBox();
 		files = new FileStorer();
-		files.setSettings(3, 4);
+		files.setSettings(files.getTimeLimit(), files.getBoardSize());
 		paintMenu();
 	}
 	public void paintMenu(){
@@ -234,7 +234,6 @@ class MenuFrame extends JFrame {
 		}
 		public void actionPerformed(ActionEvent e){
 			int t = files.getTimeLimit(); //current time limit
-			System.out.println("BEFORE time = " + t);
 			if(direction == 0){
 				if(t == 3){
 					files.setTimeLimit(1);
@@ -262,7 +261,6 @@ class MenuFrame extends JFrame {
 					time_image.setIcon(new ImageIcon("0Min.png"));
 				}
 			}
-			System.out.println("time after = " + files.getTimeLimit());
 			OptionListener x = new OptionListener();
 			x.actionPerformed(e);
 		}
@@ -289,13 +287,19 @@ class MenuFrame extends JFrame {
 		selectButton.setContentAreaFilled(false);
 		selectButton.setBorderPainted(false);
 		
+		JButton finishedButton = new JButton(new FinishedListener());
+		finishedButton.setIcon(new ImageIcon("letters/finish.png"));
+		finishedButton.setPreferredSize(new Dimension(375,125));
+		finishedButton.setOpaque(false);
+		finishedButton.setContentAreaFilled(false);
+		finishedButton.setBorderPainted(false);
+		
 		word_panel = new WordPanel();
 		word_panel.setBackground(new Color(255,97,48));
 		word_panel.setPreferredSize(new Dimension(570,160));
 		
 		
 		game = new Board(size);
-		System.out.print(game);
 		scorecard = new ScoreCard(size);
 		GridLayout GL = new GridLayout(size,size);
 		GL.setHgap(0);
@@ -325,14 +329,18 @@ class MenuFrame extends JFrame {
 		}
 		JPanel bottomMiddle = new JPanel();
 		
+		bottomMiddle.add(finishedButton);
 		bottomMiddle.add(word_panel);
 		bottomMiddle.add(selectButton);
 		bottomMiddle.setBackground(Color.BLACK);
+		JPanel fillertwo = new JPanel();
+		fillertwo.setBackground(Color.BLACK);
+		fillertwo.setPreferredSize(new Dimension(500,1));
+		bottomMiddle.add(fillertwo);
 		add(bottomMiddle, BorderLayout.SOUTH);
 		
 		JPanel scorecardPanel = new JPanel();
 		scorecardPanel.setBackground(Color.BLACK);
-		//score_panel.setBackground(Color.BLACK);
 		scorecardPanel.add(score_panel);
 		add(scorecardPanel, BorderLayout.EAST);
 		
@@ -349,6 +357,11 @@ class MenuFrame extends JFrame {
 		add(menuScreen, BorderLayout.CENTER);
 		revalidate();
 		repaint();
+	}
+	private class FinishedListener extends AbstractAction{
+		public void actionPerformed(ActionEvent e){
+			
+		}
 	}
 	private class LetterAction extends AbstractAction{
 		private int x;
@@ -388,7 +401,6 @@ class MenuFrame extends JFrame {
 			BoardButtons.get(y).get(x).setEnabled(true);
 			word_panel.updateword();
 			word_panel.repaint();
-			System.out.println(game.getCurWordString());
 		}
 		
 		/*
@@ -487,8 +499,6 @@ class MenuFrame extends JFrame {
 				}
 			} catch (FileNotFoundException e1) {
 			}
-			System.out.println(scorecard.getScoredWords());
-			System.out.println(scorecard.getTotal());
 		}
 		
 	}
@@ -542,12 +552,12 @@ class MenuFrame extends JFrame {
 	public class ScorePanel extends JPanel {
 		private ArrayList<Integer> points;
 		private ArrayList<String> words;
-		private int Total;
+		private int total;
 		
 		public ScorePanel(){
 			points = scorecard.getScoredPoints();
 			words = scorecard.getScoredWords();
-			Total = scorecard.getTotal();
+			total = scorecard.getTotal();
 		}
 		public void paintComponent(Graphics g){
 			super.paintComponent(g);
@@ -557,17 +567,23 @@ class MenuFrame extends JFrame {
 			Image post = pre.getImage();
 			g.drawImage(post, 0, 0, null);
 			
-				
-			
 			points = scorecard.getScoredPoints();
 			words = scorecard.getScoredWords();
-			Total = scorecard.getTotal();
+			total = scorecard.getTotal();
 			
 			words = scorecard.getScoredWords();
 			points = scorecard.getScoredPoints();
 			for(int i = 0; i < words.size(); i++){
-				g.drawString(words.get(i), 50, 50*i);
+				if(i==0){
+					g.drawString(words.get(i).toUpperCase(), 50, 57);
+					g.drawString(points.get(i).toString(), 440, 57);
+				}	else {
+					g.drawString(words.get(i).toUpperCase(), 50, 57+35*i);
+					g.drawString(points.get(i).toString(), 440, 57+35*i);
+				}
 			}
+			g.setFont(new Font("Arial", Font.BOLD, 64));
+			g.drawString(total+"", 240, 800);
 		}
 	}
 }

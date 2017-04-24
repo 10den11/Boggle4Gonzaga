@@ -239,6 +239,10 @@ public class FileStorer {
     {
     	timeLimit = newLimit;
     	settingsArray.set(1, newLimit);
+    	try {
+			setSettings(newLimit, this.getBoardSize());
+		} catch (IOException e) {
+		}
     }
     /**
      * 
@@ -248,6 +252,10 @@ public class FileStorer {
     {
     	boardSize = newBoardSize;
     	settingsArray.set(0, newBoardSize);
+    	try {
+			setSettings(this.getTimeLimit(), newBoardSize);
+		} catch (IOException e) {
+		}
     }
     
     /**
