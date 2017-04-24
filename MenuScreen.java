@@ -165,12 +165,16 @@ class MenuFrame extends JFrame {
 				selection[k] = new JButton[6];
 				selection[k][0] = new JButton("Board = " + k + "x" + k + ", Time = Unlimited");
 				selection[k][0].addActionListener(new highListner(k, 0));
+				selection[k][0].setBackground(new Color(255, 97, 48));
 				selection[k][1] = new JButton("Board = " + k + "x" + k + ", Time = 1 minute");
 				selection[k][1].addActionListener(new highListner(k, 1));
+				selection[k][1].setBackground(new Color(66, 124, 184));
 				selection[k][3] = new JButton("Board = " + k + "x" + k + ", Time = 3 minutes");
 				selection[k][3].addActionListener(new highListner(k, 3));
+				selection[k][3].setBackground(new Color(255, 97, 48));
 				selection[k][5] = new JButton("Board = " + k + "x" + k + ", Time = 5 minutes");
 				selection[k][5].addActionListener(new highListner(k, 5));
+				selection[k][5].setBackground(new Color(66, 124, 184));
 				
 				selectionScreen.add(selection[k][0]);
 				selectionScreen.add(selection[k][1]);
@@ -193,7 +197,7 @@ class MenuFrame extends JFrame {
 			add(menuScreen, BorderLayout.CENTER);
 			add(titleScreen, BorderLayout.NORTH);
 			add(selectionScreen, BorderLayout.EAST);
-			add(back_button, BorderLayout.SOUTH);
+			add(backScreen, BorderLayout.SOUTH);
 			revalidate();
 			repaint();
 			
