@@ -1,4 +1,5 @@
-package FileStorer;import java.io.*;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -6,18 +7,15 @@ import java.util.Scanner;
 public class FileStorer {
 	
 	//boardsizes: 4,5,6 time: unlimited,1,3,5
-	private ArrayList<String> highscoreArray40 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray41 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray43 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray45 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray50 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray51 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray53 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray55 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray60 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray61 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray63 = new ArrayList<String>(); 
-	private ArrayList<String> highscoreArray65 = new ArrayList<String>(); 
+	
+	private String[][][] HighScoreNames = new String[7][][];
+	private int[][][] HighScorePoints = new int[7][][];
+	
+	private Scanner currentReader1;
+	private Scanner currentReader2;
+	
+	private PrintWriter currentWriter1;
+	private PrintWriter currentWriter2;
 	
 	private int boardSize;
 	private int timeLimit;
@@ -34,7 +32,79 @@ public class FileStorer {
     File highscoreFile = new File(highscore);
     
     public FileStorer(){
-    	//check if files exist
+    	for(int k = 4; k <= 6; k++)
+    	{
+    		HighScoreNames[k] = new String[6][];
+    		HighScorePoints[k] = new int[6][];
+    		
+    		HighScoreNames[k][0] = new String[10];
+    		HighScoreNames[k][1] = new String[10];
+    		HighScoreNames[k][3] = new String[10];
+    		HighScoreNames[k][5] = new String[10];
+    		
+    		HighScorePoints[k][0] = new int[10];
+    		HighScorePoints[k][1] = new int[10];
+    		HighScorePoints[k][3] = new int[10];
+    		HighScorePoints[k][5] = new int[10];
+    		
+    		try {
+    			currentReader1 = new Scanner(new File("highscores/" + k + "0_points.txt"));
+    			currentReader2 = new Scanner(new File("highscores/" + k + "0_names.txt"));
+    		}
+    		catch(Exception e)
+    		{
+    			System.out.println("You done fucked up");
+    		}
+    		for(int n = 0; n < 10; n++)
+    		{
+    			HighScorePoints[k][0][n] = currentReader1.nextInt();
+    			HighScoreNames[k][0][n] = currentReader2.nextLine();
+    		}
+    		
+    		try {
+    			currentReader1 = new Scanner(new File("highscores/" + k + "1_points.txt"));
+    			currentReader2 = new Scanner(new File("highscores/" + k + "1_names.txt"));
+    		}
+    		catch(Exception e)
+    		{
+    			System.out.println("You done fucked up");
+    		}
+    		for(int n = 0; n < 10; n++)
+    		{
+    			HighScorePoints[k][1][n] = currentReader1.nextInt();
+    			HighScoreNames[k][1][n] = currentReader2.nextLine();
+    		}
+    		
+    		try {
+    			currentReader1 = new Scanner(new File("highscores/" + k + "3_points.txt"));
+    			currentReader2 = new Scanner(new File("highscores/" + k + "3_names.txt"));
+    		}
+    		catch(Exception e)
+    		{
+    			System.out.println("You done fucked up");
+    		}
+    		for(int n = 0; n < 10; n++)
+    		{
+    			HighScorePoints[k][3][n] = currentReader1.nextInt();
+    			HighScoreNames[k][3][n] = currentReader2.nextLine();
+    		}
+    		
+    		try {
+    			currentReader1 = new Scanner(new File("highscores/" + k + "5_points.txt"));
+    			currentReader2 = new Scanner(new File("highscores/" + k + "5_names.txt"));
+    		}
+    		catch(Exception e)
+    		{
+    			System.out.println("You done fucked up");
+    		}
+    		for(int n = 0; n < 10; n++)
+    		{
+    			HighScorePoints[k][5][n] = currentReader1.nextInt();
+    			HighScoreNames[k][5][n] = currentReader2.nextLine();
+    		}
+    	}
+    	settingsArray.add(5);
+    	settingsArray.add(5);
     }
     
     public void mySort(String filename, ArrayList<String> arrayList)
@@ -73,186 +143,60 @@ public class FileStorer {
     		counter ++;
     	}
     }
-    public ArrayList<String> getHighScore() throws FileNotFoundException{
-    	if (settingsArray.get(0).equals(4) && settingsArray.get(1).equals(0))
-    	{
-    		return highscoreArray40;
-    	}
-    	if (settingsArray.get(0).equals(4) && settingsArray.get(1).equals(1))
-    	{
-    		return highscoreArray41;
-    	}
-    	if (settingsArray.get(0).equals(4) && settingsArray.get(1).equals(3))
-    	{
-    		return highscoreArray43;
-    	}
-    	if (settingsArray.get(0).equals(4) && settingsArray.get(1).equals(5))
-    	{
-    		return highscoreArray45;	
-    	}
-    	if (settingsArray.get(0).equals(5) && settingsArray.get(1).equals(0))
-    	{
-    		return highscoreArray50;
-    	}
-    	if (settingsArray.get(0).equals(5) && settingsArray.get(1).equals(1))
-    	{
-    		return highscoreArray51;
-    	}
-    	if (settingsArray.get(0).equals(5) && settingsArray.get(1).equals(3))
-    	{
-    		return highscoreArray53;
-    	}
-    	if (settingsArray.get(0).equals(5) && settingsArray.get(1).equals(5))
-    	{
-    		return highscoreArray55;
-    	}
-    	if (settingsArray.get(0).equals(6) && settingsArray.get(1).equals(0))
-    	{
-    		return highscoreArray60;
-    	}
-    	if (settingsArray.get(0).equals(6) && settingsArray.get(1).equals(1))
-    	{
-    		return highscoreArray61;
-    	}
-    	if (settingsArray.get(0).equals(6) && settingsArray.get(1).equals(3))
-    	{
-    		return highscoreArray63;
-    	}
-    	if (settingsArray.get(0).equals(6) && settingsArray.get(1).equals(5))
-    	{
-    		return highscoreArray65;
-    	}
-    	return highscoreArray65;
-
-    }
-
-    public void setHighScore(String name, int newScore) throws IOException {
-    	
-    	StringBuilder previousScores = new StringBuilder();
-    	previousScores.setLength(0);
-    	Scanner inFile = new Scanner(dictionary);
-    	while ((line = inFile.nextLine()) != null)
-    	{
-    		previousScores.append(line);
-    		previousScores.append(System.lineSeparator());
-    	}
-    	
-    	if (settingsArray.get(0).equals(4) && settingsArray.get(1).equals(0))
-    	{
-    		FileWriter outFile = new FileWriter("highscore40.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray40.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore40.txt", highscoreArray40);
-    	}
-    	if (settingsArray.get(0).equals(4) && settingsArray.get(1).equals(1))
-    	{
-    		FileWriter outFile = new FileWriter("highscore41.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray41.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore41.txt", highscoreArray41);
-    	}
-    	if (settingsArray.get(0).equals(4) && settingsArray.get(1).equals(3))
-    	{
-    		FileWriter outFile = new FileWriter("highscore43.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray43.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore43.txt", highscoreArray43);
-    	}
-    	if (settingsArray.get(0).equals(4) && settingsArray.get(1).equals(5))
-    	{
-    		FileWriter outFile = new FileWriter("highscore45.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();	
-        	highscoreArray45.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore45.txt", highscoreArray45);
-    	}
-    	if (settingsArray.get(0).equals(5) && settingsArray.get(1).equals(0))
-    	{
-    		FileWriter outFile = new FileWriter("highscore50.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray50.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore50.txt", highscoreArray50);
-    	}
-    	if (settingsArray.get(0).equals(5) && settingsArray.get(1).equals(1))
-    	{
-    		FileWriter outFile = new FileWriter("highscore51.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray51.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore51.txt", highscoreArray51);
-    	}
-    	if (settingsArray.get(0).equals(5) && settingsArray.get(1).equals(3))
-    	{
-    		FileWriter outFile = new FileWriter("highscore53.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray53.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore53.txt", highscoreArray53);
-    	}
-    	if (settingsArray.get(0).equals(5) && settingsArray.get(1).equals(5))
-    	{
-    		FileWriter outFile = new FileWriter("highscore55.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray55.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore55.txt", highscoreArray55);
-    	}
-    	if (settingsArray.get(0).equals(6) && settingsArray.get(1).equals(0))
-    	{
-    		FileWriter outFile = new FileWriter("highscore60.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray60.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore60.txt", highscoreArray60);
-    	}
-    	if (settingsArray.get(0).equals(6) && settingsArray.get(1).equals(1))
-    	{
-    		FileWriter outFile = new FileWriter("highscore61.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray61.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore61.txt", highscoreArray61);
-    	}
-    	if (settingsArray.get(0).equals(6) && settingsArray.get(1).equals(3))
-    	{
-    		FileWriter outFile = new FileWriter("highscore63.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray63.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore63.txt", highscoreArray63);
-    	}
-    	if (settingsArray.get(0).equals(6) && settingsArray.get(1).equals(5))
-    	{
-    		FileWriter outFile = new FileWriter("highscore65.txt");
-        	outFile.append(previousScores);
-        	outFile.append(name + " " + Integer.toString(newScore));
-        	outFile.close();
-        	highscoreArray65.add(name + " " + Integer.toString(newScore));
-        	mySort("highscore65.txt", highscoreArray65);
-    	}
-    	
-    	
+    
+    public int getLowestHighScore()
+    {
+    	return HighScorePoints[boardSize][timeLimit][9];
     }
     
+    public int[] getAllHighScorePoints()
+    {
+    	return HighScorePoints[boardSize][timeLimit];
+    }
+    
+    public String[] getAllHighScoreNames()
+    {
+    	return HighScoreNames[boardSize][timeLimit];
+    }
+    //assumes that the score is a high score
+    public void newHighScore(String name, int score)
+    {
+    	int scorePlacement = 9;
+    	for(int k = 9; k >= 0; k--)
+    	{
+    		if(score > HighScorePoints[boardSize][timeLimit][k])
+    		{
+    			scorePlacement = k;
+    		}
+    	}
+    	for(int k = 8; k >= scorePlacement; k--)
+    	{
+    		HighScorePoints[boardSize][timeLimit][k + 1] = HighScorePoints[boardSize][timeLimit][k];
+    		HighScoreNames[boardSize][timeLimit][k + 1] = HighScoreNames[boardSize][timeLimit][k];
+    	}
+    	try {
+    		currentWriter1 = new PrintWriter("highscores/" + boardSize + timeLimit + "_points.txt");
+    		currentWriter2 = new PrintWriter("highscores/" + boardSize + timeLimit + "_names.txt");
+    		for(int k = 0; k < 10; k++)
+    		{
+    			currentWriter1.println(score + "");
+    			currentWriter2.println(name);
+    		}
+    		currentWriter1.close();
+    		currentWriter2.close();
+    	} catch(Exception e)
+		{
+			System.out.println("You done fucked up");
+		} 
+    }
+
     public void setSettings(int newTimeLimit, int newBoardSize) throws IOException{
     	boardSize = newBoardSize;
     	timeLimit = newTimeLimit;
     
+    	settingsArray.set(0, timeLimit);
+    	settingsArray.set(1, boardSize);
+    	
     	FileWriter outFile = new FileWriter("settings.txt");
     	outFile.append(Integer.toString(newBoardSize));
     	outFile.append(System.lineSeparator());
@@ -303,7 +247,7 @@ public class FileStorer {
     
     public static void main(String[] args) throws IOException{
         FileStorer file = new FileStorer();
-        file.setSettings(3,400);
+        file.setSettings(3,4);
     }
 
 }
