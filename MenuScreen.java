@@ -383,17 +383,31 @@ class MenuFrame extends JFrame {
 		done.setPreferredSize(new Dimension(400,400));
 		menuScreen.add(done, BorderLayout.NORTH);
 		menuScreen.setBackground(new Color(255,97,48));
-		//if(files.checkIfNewHighScore(scorecard.getTotal())){
+		boolean newscore = false;
+		if(files.checkIfNewHighScore(scorecard.getTotal())){
 			HighscorePanel highPanel = new HighscorePanel();
+			JTextField query = new JTextField(20);
+			highPanel.add(query);
 			menuScreen.add(highPanel, BorderLayout.CENTER);
-		//}
-		JButton back_button = new JButton(new MenuListener());
-		back_button.setIcon(new ImageIcon("back_end.png"));
-		back_button.setPreferredSize(new Dimension(333, 171));
-		back_button.setOpaque(false);
-		back_button.setContentAreaFilled(false);
-		back_button.setBorderPainted(false);
-		menuScreen.add(back_button, BorderLayout.SOUTH);
+			newscore = true;
+			JButton back_button = new JButton(new MenuListener(query));
+			back_button.setIcon(new ImageIcon("back_end.png"));
+			back_button.setPreferredSize(new Dimension(333, 171));
+			back_button.setOpaque(false);
+			back_button.setContentAreaFilled(false);
+			back_button.setBorderPainted(false);
+			menuScreen.add(back_button, BorderLayout.SOUTH);
+
+		}
+		if(!newscore){
+			JButton back_button = new JButton(new MenuListener());
+			back_button.setIcon(new ImageIcon("back_end.png"));
+			back_button.setPreferredSize(new Dimension(333, 171));
+			back_button.setOpaque(false);
+			back_button.setContentAreaFilled(false);
+			back_button.setBorderPainted(false);
+			menuScreen.add(back_button, BorderLayout.SOUTH);
+		}
 		menuScreen.revalidate();
 		menuScreen.repaint();
 		revalidate();
@@ -404,6 +418,11 @@ class MenuFrame extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 		paintMenu(1);
+		}
+		public MenuListener(){}
+		public MenuListener(JTextField name){
+			String final_name = name.getText();
+			files.newHighScore(final_name, scorecard.getTotal());
 		}
 		
 	}
@@ -641,8 +660,8 @@ class MenuFrame extends JFrame {
 			super.setBackground(new Color(255,97,48));
 			super.paintComponent(g);
 			g.setFont(new Font("Arial", Font.BOLD, 64));
-			g.drawString("New Highscore!", 200, 50);
-			g.drawString("Enter Your Name", 200, 128);
+			g.drawString("New Highscore!", 200, 100);
+			g.drawString("Enter Your Name", 200, 180);
 		}
 	}
 }
