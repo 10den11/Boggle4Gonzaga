@@ -1,11 +1,4 @@
-/**
- * @author Joe Loftus, Jeb Kilfoyle, Dominic Gianatassio
- * @version 1.0
- * Handles the 
- * 4/23/2017
- * CPSC 224, Project Boggle
- * This file handles the writing and reading of files neccessary for the game.
- */
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -123,36 +116,58 @@ public class FileStorer {
     	settingsArray.add(5);
     	
     }
-    /**
-     * 
-     * @param testValue The current highscore
-     * @return Returns true if there is a new highscore
-     */
+    
+    public void mySort(String filename, ArrayList<String> arrayList)
+    {
+    	Scanner inFile = new Scanner(filename);
+    	StringBuilder highscoreInt = new StringBuilder();
+    	
+    	StringBuilder newHighScore = new StringBuilder();
+    	line = (arrayList.get(arrayList.size()-1));
+    	
+    	for(int i=0;i<line.length();i++)
+		{
+		   if(Character.isDigit(line.charAt(i)))
+		   newHighScore.append(line.charAt(i));
+		}
+    	
+    	int counter = 0;
+    	Boolean flag = true;
+    	while (((line = inFile.nextLine()) != null) && flag)
+    	{
+    		for(int i=0;i<line.length();i++)
+    		{
+    		   if(Character.isDigit(line.charAt(i)))
+    		   highscoreInt.append(line.charAt(i));
+    		}
+    		if (Integer.parseInt(highscoreInt.toString()) < Integer.parseInt(newHighScore.toString()))
+    		{
+    			flag = false;
+    			String temp ="";
+    			temp = arrayList.get(counter);
+    			arrayList.set(counter, arrayList.get(arrayList.size()-1)); 
+    			for (int j = arrayList.size()-2; j >= counter; j++)
+    				arrayList.set(j+1, arrayList.get(j));	
+    			arrayList.set(counter+1,temp);
+    		}
+    		counter ++;
+    	}
+    }
+    
     public Boolean checkIfNewHighScore(int testValue)
     {
     	return (HighScorePoints[boardSize][timeLimit][9] < testValue);
     }
-    /**
-     * 
-     * @return returns all highscore points
-     */
-    public int[] getAllHighScorePoints()
+    
+    public int[] getAllHighScorePoints(int xbyx, int countdown)
     {
-    	return HighScorePoints[boardSize][timeLimit];
+    	return HighScorePoints[xbyx][countdown];
     }
-   /**
-    * 
-    * @return returns all names of highscorers
-    */
-    public String[] getAllHighScoreNames()
+    
+    public String[] getAllHighScoreNames(int xbyx, int countdown)
     {
-    	return HighScoreNames[boardSize][timeLimit];
+    	return HighScoreNames[xbyx][countdown];
     }
-    /**
-     * 
-     * @param name name of the new high-scorer
-     * @param score the new highscore
-     */
     //assumes that the score is a high score
     public void newHighScore(String name, int score)
     {
@@ -186,12 +201,7 @@ public class FileStorer {
 			System.out.println("You done fucked up");
 		} 
     }
-    /**
-     * 
-     * @param newTimeLimit the new time limit
-     * @param newBoardSize the new board size
-     * @throws IOException throws an exception there is an error opening settings file
-     */
+
     public void setSettings(int newTimeLimit, int newBoardSize) throws IOException{
     	boardSize = newBoardSize;
     	timeLimit = newTimeLimit;
@@ -206,64 +216,35 @@ public class FileStorer {
     	outFile.close();
     	
     }
-    /**
-     * 
-     * @return returns timelimit
-     */
+    
     public int getTimeLimit()
     {
     	return timeLimit;
     }
-    /**
-     * 
-     * @return returns Boardsize
-     */
+    
     public int getBoardSize()
     {
     	return boardSize;
     }
     
-    /**
-     * 
-     * @return returns settingsArray
-     */
     public ArrayList<Integer> getSettings()
     {
     	return settingsArray;
     }
-    /**
-     * 
-     * @param newLimit the new time limit
-     */
+    
     public void setTimeLimit(int newLimit)
     {
     	timeLimit = newLimit;
     	settingsArray.set(1, newLimit);
-    	try {
-			setSettings(newLimit, this.getBoardSize());
-		} catch (IOException e) {
-		}
     }
-    /**
-     * 
-     * @param newBoardSize the new board size
-     */
+    
     public void setBoardSize(int newBoardSize)
     {
     	boardSize = newBoardSize;
     	settingsArray.set(0, newBoardSize);
-    	try {
-			setSettings(this.getTimeLimit(), newBoardSize);
-		} catch (IOException e) {
-		}
     }
     
-    /**
-     * 
-     * @param word the word we are checking for
-     * @return Returns true if the word is in the file, false otherwise
-     * @throws FileNotFoundException throws an exception if the file cannot be found
-     */
+    
     public Boolean checkForWord(String word) throws FileNotFoundException
     {
     	Scanner inFile = new Scanner(dictionaryFile);
@@ -276,5 +257,10 @@ public class FileStorer {
     	}
     	return false;
     }
-
+    public static void main(String[] args) {
+    	FileStorer test = new FileStorer();
+    	test.newHighScore("Billy", 33);
+    	test.newHighScore("Dominic", 17);
+    	test.newHighScore("Jimbo", 66);
+    }
 }
