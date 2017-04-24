@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -10,11 +11,16 @@ public class MenuScreen {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				JFrame frame = new MenuFrame();
-				frame.setTitle("Boggle");
-				frame.setLocation(0, 0);
-				frame.setVisible(true);
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				JFrame frame;
+				try {
+					frame = new MenuFrame();
+					frame.setTitle("Boggle");
+					frame.setLocation(0, 0);
+					frame.setVisible(true);
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				} catch (IOException e) {
+					System.out.println("IOException Error");
+				}
 			}
 		});
 
@@ -28,15 +34,17 @@ class MenuFrame extends JFrame {
 	private Board game;
 	private ArrayList<ArrayList<JToggleButton>> BoardButtons;
 	private ScoreCard scorecard;
+	private WordPanel word_panel;
 	
 	
-	public MenuFrame() {
+	public MenuFrame() throws IOException {
 		
 		setSize(1920, 1080);
 		menuScreen = new JPanel();
 		menuScreen.setBackground(Color.BLACK);
 		box = Box.createVerticalBox();
 		files = new FileStorer();
+		files.setSettings(3, 4);
 		paintMenu();
 	}
 	public void paintMenu(){
@@ -74,11 +82,6 @@ class MenuFrame extends JFrame {
 		OptionButton.setPreferredSize(new Dimension(1033, 133));
 		HighScoreButton.setPreferredSize(new Dimension(1338, 134));
 		
-		/*menuScreen.add(PlayButton);
-		menuScreen.add(OptionButton);
-		menuScreen.add(HighScoreButton);
-		add(menuScreen, BorderLayout.CENTER);*/
-		
 		box.add(PlayButton);
 		box.add(Box.createVerticalStrut(100));
 		box.add(OptionButton);
@@ -107,6 +110,7 @@ class MenuFrame extends JFrame {
 			GridLayout GL = new GridLayout(5,10);
 			GL.setHgap(0);
 			GL.setVgap(0);
+			FileStorer Files = new FileStorer();
 			
 			menuScreen.setLayout(GL);
 			JPanel size_panel = new JPanel();
@@ -119,12 +123,8 @@ class MenuFrame extends JFrame {
 			JLabel label = new JLabel(i_option);
 			menuScreen.add(label);
 			
-			//Add Display bars for settings
-			//int size = files.getBoardSize();
-			//int time = files.getTimeLimit();
-			
-			int size = 6;
-			int time = 5;
+			int size = files.getBoardSize();
+			int time = files.getTimeLimit();
 			JLabel i_size = new JLabel(new ImageIcon("letters/"+ size + "x" + size + ".png"));
 			JLabel i_time = new JLabel(new ImageIcon("letters/" + time + "min.png"));
 			
@@ -206,6 +206,7 @@ class MenuFrame extends JFrame {
 				if(cside == 6){
 					files.setBoardSize(5);
 					size_image.setIcon(new ImageIcon("5x5.png"));
+					
 				}
 			} else if (direction == 1){
 				if(cside == 4){
@@ -217,6 +218,8 @@ class MenuFrame extends JFrame {
 					size_image.setIcon(new ImageIcon("6x6.png"));
 				}
 			}
+			OptionListener x = new OptionListener();
+			x.actionPerformed(e);
 		}
 	}
 	public class TimeListener extends AbstractAction{
@@ -227,34 +230,38 @@ class MenuFrame extends JFrame {
 			time_image = y;
 		}
 		public void actionPerformed(ActionEvent e){
-			int t = files.getBoardSize(); //current time limit
+			int t = files.getTimeLimit(); //current time limit
+			System.out.println("BEFORE time = " + t);
 			if(direction == 0){
-				if(t == 1){
-					files.setTimeLimit(0);
-					time_image.setIcon(new ImageIcon("time0.png"));
-				}
 				if(t == 3){
 					files.setTimeLimit(1);
-					time_image.setIcon(new ImageIcon("time1.png"));
+					time_image.setIcon(new ImageIcon("1Min.png"));
 				}
 				if(t == 5){
 					files.setTimeLimit(3);
-					time_image.setIcon(new ImageIcon("time3.png"));
+					time_image.setIcon(new ImageIcon("3Min.png"));
+				}
+				if(t == 0){
+					files.setTimeLimit(5);
+					time_image.setIcon(new ImageIcon("5Min.png"));
 				}
 			} else if (direction == 1){
-				if(t == 0){
-					files.setTimeLimit(1);
-					time_image.setIcon(new ImageIcon("time1.png"));
-				}
 				if(t == 1){
 					files.setTimeLimit(3);
-					time_image.setIcon(new ImageIcon("time3.png"));
+					time_image.setIcon(new ImageIcon("3Min.png"));
 				}
 				if(t == 3){
 					files.setTimeLimit(5);
-					time_image.setIcon(new ImageIcon("time5.png"));
+					time_image.setIcon(new ImageIcon("5Min.png"));
+				}
+				if(t == 5){
+					files.setTimeLimit(0);
+					time_image.setIcon(new ImageIcon("0Min.png"));
 				}
 			}
+			System.out.println("time after = " + files.getTimeLimit());
+			OptionListener x = new OptionListener();
+			x.actionPerformed(e);
 		}
 	}
 	public class BackListener extends AbstractAction{
@@ -271,16 +278,17 @@ class MenuFrame extends JFrame {
 		menuScreen.removeAll();
 		remove(box);
 		remove(menuScreen);
-		int size = 6;
+		int size = files.getBoardSize();
 		JButton selectButton = new JButton(new SelectListener(size));
 		selectButton.setIcon(new ImageIcon("select.png"));
 		selectButton.setPreferredSize(new Dimension(241,172));
 		selectButton.setOpaque(false);
 		selectButton.setContentAreaFilled(false);
 		selectButton.setBorderPainted(false);
-		JPanel curWord = new JPanel();
+		WordPanel curWord = new WordPanel();
 		curWord.setBackground(new Color(255,97,48));
 		curWord.setPreferredSize(new Dimension(570,160));
+		word_panel = curWord;
 		game = new Board(size);
 		System.out.print(game);
 		scorecard = new ScoreCard(size);
@@ -368,6 +376,8 @@ class MenuFrame extends JFrame {
 				enableAroundCenter(x,y);
 			}
 			BoardButtons.get(y).get(x).setEnabled(true);
+			word_panel.updateword();
+			word_panel.repaint();
 			System.out.println(game.getCurWordString());
 		}
 		
@@ -466,7 +476,6 @@ class MenuFrame extends JFrame {
 					//display invalid word message
 				}
 			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
 			}
 			System.out.println(scorecard.getScoredWords());
 			System.out.println(scorecard.getTotal());
@@ -483,6 +492,9 @@ class MenuFrame extends JFrame {
 			}
 		}
 		game.clearCurWord();
+		word_panel.updateword();
+		word_panel.repaint();
+		
 	}
 	public void enableHelper(int a, int b){
 		BoardButtons.get(b).get(a).setEnabled(true);
@@ -493,5 +505,27 @@ class MenuFrame extends JFrame {
 	public void prevEnabled(int a, int b){
 		BoardButtons.get(b).get(a).setIcon(
 			new ImageIcon("letters/"+game.getLetter(a,b).getCharacter().toUpperCase()+"_SL.png"));
+	}
+	public class WordPanel extends JPanel {
+		private String word;
+		
+		public WordPanel(){
+			word = "";
+			super.setFont(new Font("Arial", Font.BOLD, 64));
+		}
+	    public void paintComponent(Graphics g) {
+	        super.paintComponent(g);
+	        g.drawString(word, 10, 100);
+	    }
+	    public void updateword(){
+	    	word = game.getCurWordString().toUpperCase();
+	    	if(word.length()>11)
+	    		super.setFont(new Font("Arial", Font.BOLD, 48));
+	    	if(word.length()>16)
+	    		super.setFont(new Font("Arial", Font.BOLD, 16));
+	    	if(word.length()<11)
+	    		super.setFont(new Font("Arial", Font.BOLD, 64));
+	    }
+
 	}
 }

@@ -23,7 +23,7 @@ public class FileStorer {
 	
 	private String  settings = "settings.txt";
 	private String  highscore = "highscore.txt";
-	private String  dictionary = "dictionary.txt";
+	private String  dictionary = "WordList.txt";
 	private String line;
 	
 
@@ -245,11 +245,12 @@ public class FileStorer {
     }
     
     
-    public Boolean checkForWord(String word)
+    public Boolean checkForWord(String word) throws FileNotFoundException
     {
-    	Scanner inFile = new Scanner(dictionary);
-    	while ((line = inFile.nextLine()) != null) {
-    		if (line.equals(word))
+    	Scanner inFile = new Scanner(dictionaryFile);
+    	while (inFile.hasNextLine()) {
+    		line = inFile.nextLine();
+    		if (line.equalsIgnoreCase(word))
     		{
     			return true;
     		}

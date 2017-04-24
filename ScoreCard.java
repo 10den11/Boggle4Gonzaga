@@ -118,7 +118,7 @@ public class ScoreCard {
 	{
 		return scoredWords;
 	}
-	public ArrayList<Integer> geScoredPoints()
+	public ArrayList<Integer> getScoredPoints()
 	{
 		return scoredPoints;
 	}
