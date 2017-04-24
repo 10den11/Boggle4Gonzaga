@@ -29,6 +29,7 @@ class MenuFrame extends JFrame {
 	private ArrayList<ArrayList<JToggleButton>> BoardButtons;
 	private ScoreCard scorecard;
 	
+	
 	public MenuFrame() {
 		
 		setSize(1920, 1080);
@@ -41,6 +42,7 @@ class MenuFrame extends JFrame {
 	public void paintMenu(){
 		menuScreen.removeAll();
 		box.removeAll();
+		menuScreen.setLayout(new FlowLayout());
 		
 		JButton PlayButton = new JButton(new StartListener());
 		JButton OptionButton = new JButton(new OptionListener());
@@ -99,70 +101,86 @@ class MenuFrame extends JFrame {
 		 */
 		public void actionPerformed(ActionEvent e) {
 			menuScreen.removeAll();
+			box.removeAll();
 			remove(box);
 			remove(menuScreen);
-			menuScreen.setLayout(new GridBagLayout());
-			GridBagConstraints c = new GridBagConstraints();
+			GridLayout GL = new GridLayout(5,10);
+			GL.setHgap(0);
+			GL.setVgap(0);
+			
+			menuScreen.setLayout(GL);
+			JPanel size_panel = new JPanel();
+			JPanel time_panel = new JPanel();
+			size_panel.setBackground(Color.BLACK);
+			time_panel.setBackground(Color.BLACK);
 			
 			//add Options Title
 			ImageIcon i_option = new ImageIcon("option.png");
-			JLabel label = new JLabel("", i_option, JLabel.CENTER);
-			c.gridwidth = 3;
-			c.gridx = 2;
-			c.gridy = 0;
-			c.anchor = GridBagConstraints.PAGE_START;
-			menuScreen.add(label, c);
+			JLabel label = new JLabel(i_option);
+			menuScreen.add(label);
 			
 			//Add Display bars for settings
-			int size = files.getBoardSize();
-			int time = files.getTimeLimit();
-			JLabel i_size = new JLabel(new ImageIcon(size + "x" + size + ".png"));
-			JLabel i_time = new JLabel(new ImageIcon("time" + time + ".png"));
-			c.gridy = 3;
-			menuScreen.add(i_size, c);
-			c.gridy = 4;
-			menuScreen.add(i_time, c);
+			//int size = files.getBoardSize();
+			//int time = files.getTimeLimit();
 			
-			
+			int size = 6;
+			int time = 5;
+			JLabel i_size = new JLabel(new ImageIcon("letters/"+ size + "x" + size + ".png"));
+			JLabel i_time = new JLabel(new ImageIcon("letters/" + time + "min.png"));
 			
 			
 			//add Board Size Buttons
 			JButton size_back_arrow = new JButton(new SizeListener(0, i_size));
 			JButton size_forward_arrow = new JButton(new SizeListener(1, i_size));
-			size_back_arrow.setIcon(new ImageIcon("size_arrow_back.png"));
-			size_forward_arrow.setIcon(new ImageIcon("size_arrow_forward.png"));
-			//size_back_arrow.setPreferredSize(new Dimension(x,y));
-			//size_forward_arrow.setPreferredSize(new Dimension(x,y));
-			c.gridx = 1;
-			c.gridy = 3;
-			menuScreen.add(size_back_arrow, c);
-			c.gridx = 3;
-			menuScreen.add(size_forward_arrow, c);
+			size_back_arrow.setIcon(new ImageIcon("letters/left.png"));
+			size_forward_arrow.setIcon(new ImageIcon("letters/right.png"));
+			size_back_arrow.setOpaque(false);
+			size_back_arrow.setContentAreaFilled(false);
+			size_back_arrow.setBorderPainted(false);
+			size_forward_arrow.setOpaque(false);
+			size_forward_arrow.setContentAreaFilled(false);
+			size_forward_arrow.setBorderPainted(false);
+			
+			size_panel.add(size_back_arrow);
+			size_panel.add(i_size);
+			size_panel.add(size_forward_arrow);
 			
 			
 			//add Timer Buttons
 			JButton time_back_arrow = new JButton(new TimeListener(0, i_time));
 			JButton time_forward_arrow = new JButton(new TimeListener(1, i_time));
-			time_back_arrow.setIcon(new ImageIcon("time_arrow_back.png"));
-			time_forward_arrow.setIcon(new ImageIcon("time_arrow_forward.png"));
-			//time_back_arrow.setPreferredSize(new Dimension(x,y));
-			//time_forward_arrow.setPreferredSize(new Dimension(x,y));
-			c.gridx = 1;
-			c.gridy = 4;
-			menuScreen.add(time_back_arrow, c);
-			c.gridx = 3;
-			menuScreen.add(time_forward_arrow, c);
+			time_back_arrow.setIcon(new ImageIcon("letters/left_T.png"));
+			time_forward_arrow.setIcon(new ImageIcon("letters/right_T.png"));
+			time_back_arrow.setOpaque(false);
+			time_back_arrow.setContentAreaFilled(false);
+			time_back_arrow.setBorderPainted(false);
+			time_forward_arrow.setOpaque(false);
+			time_forward_arrow.setContentAreaFilled(false);
+			time_forward_arrow.setBorderPainted(false);
+			
+			time_panel.add(time_back_arrow);
+			time_panel.add(i_time);
+			time_panel.add(time_forward_arrow);
 			
 			//add Back Button
 			JButton back_button = new JButton(new BackListener());
 			back_button.setIcon(new ImageIcon("back.png"));
 			back_button.setPreferredSize(new Dimension(333, 171));
-			c.gridx = 0;
-			c.gridy = 5;
-			c.weighty = 1;
-			c.anchor = GridBagConstraints.PAGE_END;
-			menuScreen.add(back_button, c);
+			back_button.setOpaque(false);
+			back_button.setContentAreaFilled(false);
+			back_button.setBorderPainted(false);
 			
+			JPanel filler = new JPanel();
+			JPanel back_panel = new JPanel();
+			back_panel.add(back_button);
+			back_panel.setBackground(Color.BLACK);
+			back_panel.setLayout(new BorderLayout());
+			filler.setBackground(Color.BLACK);
+			menuScreen.add(filler);
+			menuScreen.add(size_panel);
+			menuScreen.add(time_panel);
+			back_panel.add(back_button, BorderLayout.WEST);
+			menuScreen.add(back_panel);
 			menuScreen.revalidate();
 			menuScreen.repaint();
 			add(menuScreen);
@@ -254,12 +272,15 @@ class MenuFrame extends JFrame {
 		remove(box);
 		remove(menuScreen);
 		int size = 6;
-		//JPanel centerPanel = new JPanel();
 		JButton selectButton = new JButton(new SelectListener(size));
 		selectButton.setIcon(new ImageIcon("select.png"));
 		selectButton.setPreferredSize(new Dimension(241,172));
-		JLabel curWord = new JLabel(new ImageIcon (""));
-		//int size = files.getBoardSize();
+		selectButton.setOpaque(false);
+		selectButton.setContentAreaFilled(false);
+		selectButton.setBorderPainted(false);
+		JPanel curWord = new JPanel();
+		curWord.setBackground(new Color(255,97,48));
+		curWord.setPreferredSize(new Dimension(570,160));
 		game = new Board(size);
 		System.out.print(game);
 		scorecard = new ScoreCard(size);
@@ -277,6 +298,9 @@ class MenuFrame extends JFrame {
 				JToggleButton LB = new JToggleButton(new LetterAction(j,i,size));
 				LB.setIcon(new ImageIcon("letters/"+game.getLetter(j, i).getCharacter().toUpperCase()+"_SL.png"));
 				LB.setPreferredSize(new Dimension(128,128));
+				LB.setOpaque(false);
+				LB.setContentAreaFilled(false);
+				LB.setBorderPainted(false);
 				row.add(LB);
 				menuScreen.add(LB);
 				
@@ -296,7 +320,11 @@ class MenuFrame extends JFrame {
 		
 		JPanel leftPanel = new JPanel();
 		leftPanel.setBackground(Color.BLACK);
+		ImageIcon i_scoring_info = new ImageIcon("letters/Score_"+size+"x"+size+".png");
+		JLabel label = new JLabel(i_scoring_info);
+		leftPanel.add(label);
 		add(leftPanel, BorderLayout.WEST);
+		
 		
 		menuScreen.revalidate();
 		menuScreen.repaint();
